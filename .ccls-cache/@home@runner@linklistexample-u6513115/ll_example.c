@@ -40,6 +40,7 @@ int main(void) {
       scanf("%d", &item);
       insert(&startPtr, item); // insert item in list
       printList(startPtr);
+      reversedlist(startPtr);
       break;
     case 2: // delete an element
       // if list is not empty
@@ -107,17 +108,20 @@ void insert(LLPtr *sPtr, int value) {
     // insert new node at beginning of list
     if (previousPtr == NULL) {
       newPtr->nextPtr = *sPtr;
-
+      if (currentPtr !=
+          NULL) //แปลว่า current!=null เนื่องจากตัวสุดท้ายไม่ต้องมี null แล้ว
+        (currentPtr)->pPtr = newPtr;
       *sPtr = newPtr;
 
     }      // end if
     else { // insert new node between previousPtr and currentPtr
       previousPtr->nextPtr = newPtr;
-      newPtr->nextPtr = currentPtr;
+      newPtr->pPtr = previousPtr;
 
       //เชื่อมกลับ
       newPtr->nextPtr = currentPtr;
-      if (currentPtr) //แปลว่า current!=null เนื่องจากตัวสุดท้ายไม่ต้องมี null แล้ว 
+      if (currentPtr !=
+          NULL) //แปลว่า current!=null เนื่องจากตัวสุดท้ายไม่ต้องมี null แล้ว
         currentPtr->pPtr = newPtr;
 
     } // end else
@@ -137,7 +141,10 @@ int deletes(LLPtr *sPtr, int value) {
   if (value == (*sPtr)->data) {
     tempPtr = *sPtr;          // hold onto node being removed
     *sPtr = (*sPtr)->nextPtr; // de-thread the node
-    free(tempPtr);            // free the de-threaded node
+
+    if (*sPtr)
+      (*sPtr)->pPtr = NULL;
+    free(tempPtr); // free the de-threaded node
     return value;
   } // end if
   else {
@@ -148,12 +155,17 @@ int deletes(LLPtr *sPtr, int value) {
     while (currentPtr != NULL && currentPtr->data != value) {
       previousPtr = currentPtr;         // walk to ...
       currentPtr = currentPtr->nextPtr; // ... next node
-    }                                   // end while
+
+    } // end while
 
     // delete node at currentPtr
     if (currentPtr != NULL) {
       tempPtr = currentPtr;
       previousPtr->nextPtr = currentPtr->nextPtr;
+
+      if (currentPtr->nextPtr != NULL)
+        currentPtr->nextPtr->pPtr = previousPtr;
+
       free(tempPtr);
       return value;
     } // end if
