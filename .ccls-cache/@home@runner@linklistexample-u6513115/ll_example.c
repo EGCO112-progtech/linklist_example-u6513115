@@ -20,7 +20,7 @@ int isEmpty(LLPtr sPtr);
 void insert(LLPtr *sPtr, int value);
 void printList(LLPtr currentPtr); //แค่แสดงผลเฉย ๆ เลยไม่มี *
 void instructions(void);
-void reversedlist();
+void reversedlist(LLPtr currentPtr);
 
 int main(void) {
   LLPtr startPtr = NULL; // initially there are no nodes สร้าง node ว่าง1
@@ -70,7 +70,7 @@ int main(void) {
     printf("%s", "? ");
     scanf("%u", &choice);
   } // end while
-    /* Clear all nodes at the end of nodes*/
+  /* Clear all nodes at the end of nodes*/
   puts("End of run.");
 } // end main
 
@@ -93,6 +93,7 @@ void insert(LLPtr *sPtr, int value) {
   if (newPtr != NULL) {     // is space available
     newPtr->data = value;   // place value in node
     newPtr->nextPtr = NULL; // node does not link to another node
+    newPtr->pPtr = NULL;
 
     previousPtr = NULL;
     currentPtr = *sPtr;
@@ -112,8 +113,12 @@ void insert(LLPtr *sPtr, int value) {
     }      // end if
     else { // insert new node between previousPtr and currentPtr
       previousPtr->nextPtr = newPtr;
-
       newPtr->nextPtr = currentPtr;
+
+      //เชื่อมกลับ
+      newPtr->nextPtr = currentPtr;
+      if (currentPtr) //แปลว่า current!=null เนื่องจากตัวสุดท้ายไม่ต้องมี null แล้ว 
+        currentPtr->pPtr = newPtr;
 
     } // end else
   }   // end if
@@ -180,7 +185,8 @@ void printList(LLPtr currentPtr) {
   } // end else
 } // end function printList
 
-void reversedlist(LLPtr currentPtr) {//ต้องไปข้างหน้าจนถึงตัวสุดท้ายก่อน แล้วค่อยเริ่มจากตัวสุดท้ายมาข้างหน้า
+void reversedlist(
+    LLPtr currentPtr) { //ต้องไปข้างหน้าจนถึงตัวสุดท้ายก่อน แล้วค่อยเริ่มจากตัวสุดท้ายมาข้างหน้า
   // if list is empty
   if (isEmpty(currentPtr)) {
     puts("List is empty.\n");
@@ -190,9 +196,9 @@ void reversedlist(LLPtr currentPtr) {//ต้องไปข้างหน้�
 
     while (currentPtr->nextPtr != NULL) {
       currentPtr = currentPtr->nextPtr;
-    } 
+    }
 
-        while (currentPtr->pPtr != NULL) {
+    while (currentPtr->pPtr != NULL) {
       printf("%d --> ", currentPtr->data);
       currentPtr = currentPtr->pPtr;
     }
