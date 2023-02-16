@@ -6,6 +6,8 @@
 // self-referential structure
 struct Node {
   int data;             // each listNode contains a character
+  int id;
+  char name[100];
   struct Node *nextPtr; // pointer to next node
   struct Node *pPtr;
 }; // end structure listNode
@@ -18,15 +20,21 @@ typedef LLnode *LLPtr;      // synonym for ListNode*
 int deletes(LLPtr *sPtr, int value); //มี* เพราะมีการเปลี่ยนค่า
 int isEmpty(LLPtr sPtr);
 void insert(LLPtr *sPtr, int value);
+void insertid(LLPtr *sPtr, int value);
 void printList(LLPtr currentPtr); //แค่แสดงผลเฉย ๆ เลยไม่มี *
 void instructions(void);
 void reversedlist(LLPtr currentPtr);
 
 int main(void) {
   LLPtr startPtr = NULL; // initially there are no nodes สร้าง node ว่าง1
+  LLPtr startPtrid = NULL;
+  LLPtr startPtrname = NULL;
   unsigned int choice; // user's choice
   int item;            // char entered by user
+  int ids;
+  char names[100];
 
+  printf("*************************\n");
   instructions(); // display the menu
   printf("%s", "? ");
   scanf("%u", &choice);
@@ -41,6 +49,12 @@ int main(void) {
       insert(&startPtr, item); // insert item in list
       printList(startPtr);
       reversedlist(startPtr);
+      
+      printf("%s", "Enter an id: ");
+      scanf("%d", &ids);
+      insertid(&startPtrid, ids); 
+      printList(startPtrid);
+
       break;
     case 2: // delete an element
       // if list is not empty
@@ -131,7 +145,56 @@ void insert(LLPtr *sPtr, int value) {
   } // end else
 } // end function insert
 
-// delete a list element
+void insertid(LLPtr *sPtr, int value) {
+  LLPtr newPtr;      // pointer to new node
+  LLPtr previousPtr; // pointer to previous node in list
+  LLPtr currentPtr;  // pointer to current node in list
+
+  newPtr = (LLPtr)malloc(sizeof(LLnode)); // create node
+
+  if (newPtr != NULL) {     // is space available
+    newPtr->id = value;   // place value in node
+    newPtr->nextPtr = NULL; // node does not link to another node
+    newPtr->pPtr = NULL;
+
+    previousPtr = NULL;
+    currentPtr = *sPtr;
+
+    // loop to find the correct location in the list
+    while (currentPtr != NULL && value > currentPtr->id) {
+      previousPtr = currentPtr;         // walk to ...
+      currentPtr = currentPtr->nextPtr; // ... next node
+    }                                   // end while
+
+    // insert new node at beginning of list
+    if (previousPtr == NULL) {
+      newPtr->nextPtr = *sPtr;
+      if (currentPtr !=
+          NULL) //แปลว่า current!=null เนื่องจากตัวสุดท้ายไม่ต้องมี null แล้ว
+        (currentPtr)->pPtr = newPtr;
+      *sPtr = newPtr;
+
+    }      // end if
+    else { // insert new node between previousPtr and currentPtr
+      previousPtr->nextPtr = newPtr;
+      newPtr->pPtr = previousPtr;
+
+      //เชื่อมกลับ
+      newPtr->nextPtr = currentPtr;
+      if (currentPtr !=
+          NULL) //แปลว่า current!=null เนื่องจากตัวสุดท้ายไม่ต้องมี null แล้ว
+        currentPtr->pPtr = newPtr;
+
+    } // end else
+  }   // end if
+  else {
+    printf("%d not inserted. No memory available.\n", value);
+  } // end else
+} // end function insert
+
+
+
+
 int deletes(LLPtr *sPtr, int value) {
   LLPtr previousPtr; // pointer to previous node in list
   LLPtr currentPtr;  // pointer to current node in list
