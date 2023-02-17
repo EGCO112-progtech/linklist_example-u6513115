@@ -33,6 +33,8 @@ int main(void) {
   unsigned int choice; // user's choice
   int item;            // char entered by user
   char name[100];
+  LLPtr tmp;
+  LLnode *Nt;
 
   instructions(); // display the menu
   printf("%s", "? ");
@@ -69,7 +71,7 @@ int main(void) {
           printf("%d deleted.\n", item);
           printList(startPtr);
           printf("\n");
-          printList(startPtr2);
+          printList();
         } // end if
         else {
           printf("%d not found.\n\n", item);
@@ -80,6 +82,16 @@ int main(void) {
       } // end else
 
       break;
+
+      case 3:
+          tmp = startPtr;
+          while (isEmpty(startPtr)) {
+            printf("+\n"); //เช็คว่าทำงานได้จริง
+            Nt = tmp->nextPtr;
+            free(tmp);
+            tmp = Nt;
+  }
+        
     default:
       puts("Invalid choice.\n");
       instructions();
