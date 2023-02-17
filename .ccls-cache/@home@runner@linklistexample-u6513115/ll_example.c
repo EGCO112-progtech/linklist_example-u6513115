@@ -46,13 +46,15 @@ int main(void) {
       printf("%s", "Enter an id: ");
       scanf("%d", &item);
       insert(&startPtr, item); // insert item in list
-      
 
-      
+      printf("%s", "Enter a name: ");
+      scanf("%s", name);
+      insertstr(&startPtr2, name); // insert item in list
+
       printList(startPtr);
       reversedlist(startPtr);
 
-
+      printListstr(startPtr2);
 
       break;
     case 2: // delete an element
@@ -204,9 +206,11 @@ void printList(LLPtr currentPtr) {
 
     // while not the end of the list
     while (currentPtr->nextPtr != NULL) {
-      printf("id = %d\n", currentPtr->id);
+      printf("%d --> ", currentPtr->id);
       currentPtr = currentPtr->nextPtr;
     } // end while
+
+    printf("%d --> NULL\n", currentPtr->id);
 
   } // end else
 } // end function printList
@@ -226,12 +230,10 @@ void reversedlist(
 
     while (currentPtr->pPtr != NULL) {
       printf("id = %d\n", currentPtr->id);
-      printf("name = %s\n", currentPtr->name);
       currentPtr = currentPtr->pPtr;
     }
 
     printf("id = %d\n", currentPtr->id);
-    printf("name = %s\n", currentPtr->name);
 
   } // end else
 } // end function printList
@@ -244,7 +246,7 @@ void insertstr(LLPtr *sPtr, char value[]) {
   newPtr = (LLPtr)malloc(sizeof(LLnode)); // create node
 
   if (newPtr != NULL) {     // is space available
-    strcpy(value,newPtr->name); // place value in node
+    strcpy(newPtr->name,value);
     newPtr->nextPtr = NULL; // node does not link to another node
     newPtr->pPtr = NULL;
 
@@ -252,7 +254,7 @@ void insertstr(LLPtr *sPtr, char value[]) {
     currentPtr = *sPtr;
 
     // loop to find the correct location in the list
-    while (currentPtr != NULL && value > currentPtr->name) {
+    while (currentPtr != NULL && strcmp(currentPtr->name,value)>0) {
       previousPtr = currentPtr;         // walk to ...
       currentPtr = currentPtr->nextPtr; // ... next node
     }                                   // end while
@@ -260,8 +262,7 @@ void insertstr(LLPtr *sPtr, char value[]) {
     // insert new node at beginning of list
     if (previousPtr == NULL) {
       newPtr->nextPtr = *sPtr;
-      if (currentPtr !=
-          NULL) //แปลว่า current!=null เนื่องจากตัวสุดท้ายไม่ต้องมี null แล้ว
+      if (currentPtr !=NULL) //แปลว่า current!=null เนื่องจากตัวสุดท้ายไม่ต้องมี null แล้ว
         (currentPtr)->pPtr = newPtr;
       *sPtr = newPtr;
 
@@ -272,7 +273,8 @@ void insertstr(LLPtr *sPtr, char value[]) {
 
       //เชื่อมกลับ
       newPtr->nextPtr = currentPtr;
-      if (currentPtr !=NULL) //แปลว่า current!=null เนื่องจากตัวสุดท้ายไม่ต้องมี null แล้ว
+      if (currentPtr !=
+          NULL) //แปลว่า current!=null เนื่องจากตัวสุดท้ายไม่ต้องมี null แล้ว
         currentPtr->pPtr = newPtr;
 
     } // end else
@@ -333,9 +335,11 @@ void printListstr(LLPtr currentPtr) {
 
     // while not the end of the list
     while (currentPtr->nextPtr != NULL) {
-      printf("name = %s\n", currentPtr->name);
+      printf("%s --> ", currentPtr->name);
       currentPtr = currentPtr->nextPtr;
     } // end while
+
+    printf("%s --> NULL\n", currentPtr->name);
 
   } // end else
 } // end function printList
