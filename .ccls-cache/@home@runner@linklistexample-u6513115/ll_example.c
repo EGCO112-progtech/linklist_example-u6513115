@@ -71,7 +71,7 @@ int main(void) {
           printf("%d deleted.\n", item);
           printList(startPtr);
           printf("\n");
-          printList();
+          printList(startPtr2);
         } // end if
         else {
           printf("%d not found.\n\n", item);
